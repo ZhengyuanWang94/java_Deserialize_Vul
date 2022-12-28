@@ -7,13 +7,28 @@ import java.io.Serializable;
 public class Person implements Serializable {
     public String name;
     private int age;
+    public static int id;
 
     public Person() {
+        System.out.println("无参构造方法");
+    }
+
+    static {
+        System.out.println("静态代码块");
+    }
+
+    public static void staticAction(){
+        System.out.println("静态方法");
     }
 
     public Person(String name, int age) {
         this.name = name;
         this.age = age;
+        System.out.println("有参构造方法");
+    }
+
+    {
+        System.out.println("构造代码块");
     }
 
     @Override
