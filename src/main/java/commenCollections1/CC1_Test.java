@@ -1,4 +1,4 @@
-package commenCollections;
+package commenCollections1;
 
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.functors.ChainedTransformer;
@@ -9,11 +9,10 @@ import org.apache.commons.collections.map.TransformedMap;
 import java.io.*;
 import java.lang.annotation.Target;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CC_Test {
+public class CC1_Test {
 
     public static void main(String[] args) throws Exception {
 //        Runtime.getRuntime().exec("open .");

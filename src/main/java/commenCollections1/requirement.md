@@ -17,3 +17,5 @@ openJDK: changeset 11554:af660750b2f4
 
 #### 另外一条调用链
 ![](Gadget Chain.png)
+
+可以用lazyMap
