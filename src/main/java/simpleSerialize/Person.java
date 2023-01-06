@@ -49,6 +49,6 @@ public class Person implements Serializable {
 //    3. 入口类参数中包含可控类，该类又调用其他有危险方法的类，readObject时调用
     private void readObject(ObjectInputStream objectInputStream) throws IOException, ClassNotFoundException {
         objectInputStream.defaultReadObject();
-        Runtime.getRuntime().exec("open .");
+        Runtime.getRuntime().exec("open /System/Applications/Calculator.app/Contents/MacOS/Calculator");
     }
 }
