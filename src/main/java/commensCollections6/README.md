@@ -16,4 +16,4 @@ commons collections: 3.2.1
 
 补充一下commonsCollections的包结构
 
-![img.png](img.png)
+![](package structure.png)
