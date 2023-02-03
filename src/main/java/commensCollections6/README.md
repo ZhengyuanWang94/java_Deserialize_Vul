@@ -17,3 +17,16 @@ commons collections: 3.2.1
 补充一下commonsCollections的包结构
 
 ![](package structure.png)
+
+### 调用链
+```shell
+xxx.readObject()
+    HashMap.put()
+    HashMap.hash()
+        TiedMapEntry.hashCode()
+        TiedMapEntry.getValue()
+            LazyMap.get()
+                ChainedTransformer.transform()
+                    InvokerTransformer.transform()
+                        Runtime.exec()
+```

@@ -78,7 +78,7 @@ public class CC6_Test {
         ChainedTransformer chainedTransformer = new ChainedTransformer(transformers);
         HashMap<Object, Object> hashMap = new HashMap<>();
 //        Map lazyMap = LazyMap.decorate(hashMap, chainedTransformer);
-        Map lazyMap = LazyMap.decorate(hashMap, new ConstantTransformer("five"));
+        Map lazyMap = LazyMap.decorate(hashMap, new ConstantTransformer("wzy"));
         TiedMapEntry tiedMapEntry = new TiedMapEntry(lazyMap, "key");
         HashMap<Object, Object> expMap = new HashMap<>();
         expMap.put(tiedMapEntry, "value");
